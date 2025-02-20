@@ -19,6 +19,9 @@ Run the server:
 ```
 
 ## Options
-- `-port`: The port to listen on. Default is 2222.
-- `-script`: The path to the shell script to execute.
-- `-key`: The path to the private key to use. By default a new key will be used every time the server is started.
+| Option   | Description                              | Default | Required |
+| -------- | ---------------------------------------- | ------- | -------- |
+| `port`   | The port to listen on.                   | 2222    | No       |
+| `script` | The path to the shell script to execute. | None    | Yes      |
+| `key`    | The path to the private key to use.      | None    | No       |
+
