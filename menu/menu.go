@@ -17,7 +17,7 @@ type MenuModel struct {
 
 func CreateMenu() *MenuModel {
 	return &MenuModel{
-		choices: []string{"About me", "Blog", "Exit"},
+		choices: []string{"About me", "Projects", "Blog"},
 	}
 }
 
@@ -39,7 +39,6 @@ func (m *MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			m.selected = m.cursor
-			return m, tea.Quit
 		}
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
@@ -49,9 +48,14 @@ func (m *MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *MenuModel) View() string {
-	var menu []string
 
 	titleStyle := lipgloss.NewStyle().Bold(true)
+	footerStyle := lipgloss.NewStyle().
+		Background(lipgloss.Color("15")).
+		Foreground(lipgloss.Color("0")).
+		Padding(0, 1)
+
+	var menu []string
 	menu = append(menu, titleStyle.Render("Jordi Gómez\n"))
 
 	for i, item := range m.choices {
@@ -62,9 +66,24 @@ func (m *MenuModel) View() string {
 		}
 	}
 
+	// Main content (title + menu items)
+	content := lipgloss.NewStyle().
+		Width(m.width).
+		Height(m.height-1). // Reserve space for footer
+		Align(lipgloss.Center, lipgloss.Center).
+		Render(strings.Join(menu, "\n"))
+
+	// Footer content
+	footer := footerStyle.Render(
+		"↑/↓: Navigate • Enter: Select • q: Quit",
+	)
+
+	// Combine both elements
 	return lipgloss.NewStyle().
 		Width(m.width).
 		Height(m.height).
-		Align(lipgloss.Center, lipgloss.Center).
-		Render(strings.Join(menu, "\n"))
+		Render(lipgloss.JoinVertical(
+			content,
+			footer,
+		))
 }
