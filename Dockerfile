@@ -20,16 +20,10 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 WORKDIR /app
 # Copy the built binary, the menu script, and the persistent host key from the builder stage
 COPY --from=builder /app/sshell .
-COPY --from=builder /app/menu.sh .
-#COPY --from=builder /app/host_key .
-# Ensure the shell script is executable
-RUN chmod +x menu.sh
-# Adjust permissions and ownership for the host_key file
-RUN chmod 400 host_key && chown appuser:appgroup host_key
 # Switch to non-root user
 USER appuser
 # Expose the SSH server port
 EXPOSE 2222
 # Run the SSH server with required arguments
-ENTRYPOINT ["/app/sshell", "-script", "/app/menu.sh"]
+ENTRYPOINT ["/app/sshell"]
 
