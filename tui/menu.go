@@ -1,4 +1,4 @@
-package menu
+package tui
 
 import (
 	"strings"
@@ -39,6 +39,8 @@ func (m *MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			m.selected = m.cursor
+			model := m.getSelectedModel()
+			return model, CreateWindowSizeCmd(m.width, m.height)
 		}
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
@@ -47,8 +49,16 @@ func (m *MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m *MenuModel) View() string {
+func (m *MenuModel) getSelectedModel() tea.Model {
+	switch m.choices[m.selected] {
+	case "About me":
+		return CreateAbout()
+	default:
+		return m
+	}
+}
 
+func (m *MenuModel) View() string {
 	titleStyle := lipgloss.NewStyle().Bold(true)
 	footerStyle := lipgloss.NewStyle().
 		Background(lipgloss.Color("15")).
@@ -83,6 +93,7 @@ func (m *MenuModel) View() string {
 		Width(m.width).
 		Height(m.height).
 		Render(lipgloss.JoinVertical(
+			lipgloss.Top,
 			content,
 			footer,
 		))
