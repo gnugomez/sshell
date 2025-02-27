@@ -1,5 +1,5 @@
 # Stage 1: Build the Go binary
-FROM golang:1.20-alpine AS builder
+FROM golang:1.23-alpine AS builder
 # Install necessary packages (bash is needed to run menu.sh)
 RUN apk add --no-cache bash git
 WORKDIR /app
@@ -8,6 +8,8 @@ COPY go.mod go.sum ./
 RUN go mod download
 # Copy all source files (main.go, menu.sh, host_key, etc.)
 COPY . .
+# Ensure dependencies are correctly downloaded
+RUN go mod tidy
 # Build a statically-linked binary
 RUN CGO_ENABLED=0 go build -o sshell main.go
 
