@@ -21,25 +21,32 @@ import (
 func main() {
 	var (
 		hostKeyPath string
+		hostKey     string
 		port        int
 	)
 
-	flag.StringVar(&hostKeyPath, "key", "", "Path to the host key file")
+	flag.StringVar(&hostKeyPath, "key-path", "", "Path to the host key file")
+	flag.StringVar(&hostKey, "key", "", "Host key content")
 	flag.IntVar(&port, "port", 2222, "Port number to listen on")
 	flag.Parse()
 
 	log.SetLevel(log.DebugLevel)
 
-	// Create SSH server
-	s, err := wish.NewServer(
+	options := []ssh.Option{
 		wish.WithAddress(fmt.Sprintf(":%d", port)),
-		wish.WithHostKeyPath(hostKeyPath),
-		// Add logging middleware
 		wish.WithMiddleware(
 			logging.Middleware(),
 			bubbletea.Middleware(teaMiddleware),
 		),
-	)
+	}
+
+	if hostKeyPath != "" {
+		options = append(options, wish.WithHostKeyPath(hostKeyPath))
+	} else if hostKey != "" {
+		options = append(options, wish.WithHostKeyPEM([]byte(hostKey)))
+	}
+
+	s, err := wish.NewServer(options...)
 
 	if err != nil {
 		log.Fatal("Failed to create server", "error", err)

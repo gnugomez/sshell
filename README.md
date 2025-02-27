@@ -15,7 +15,7 @@ go build -o sshell .
 
 Run the server:
 ```bash
-./sshell -port 2222 -key /path/to/key
+./sshell -port 2222 -key-path /path/to/key
 ```
 
 Connect to the server:
@@ -24,8 +24,9 @@ ssh -p 2222 user@localhost
 ```
 
 ## Options
-| Option   | Description                              | Default | Required |
-| -------- | ---------------------------------------- | ------- | -------- |
-| `port`   | The port to listen on.                   | 2222    | No       |
-| `key`    | The path to the private key to use.      | None    | No       |
+| Option     | Description                         | Default | Required |
+| ---------- | ----------------------------------- | ------- | -------- |
+| `port`     | The port to listen on.              | 2222    | No       |
+| `key-path` | The path to the private key to use. | None    | No       |
+| `key`      | The key pem content.                | None    | No       |
 
